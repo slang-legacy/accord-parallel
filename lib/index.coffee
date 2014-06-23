@@ -1,4 +1,3 @@
-JASON = require 'JASON'
 _ = require 'lodash'
 nodefn = require 'when/node'
 accord = require 'accord'
@@ -17,14 +16,14 @@ class AccordProxy
     if not _.isEqual(args, JSON.parse(JSON.stringify(args)))
       canBeDelegated = false
     if canBeDelegated
-      nodefn.apply(workers, [@name, method, args]).then((res) ->
-        JASON.parse(res)
+      nodefn.apply(workers, [@name, @customPath, method, args]).then((res) ->
+        JSON.parse(res)
       )
     else
       @_adapter[method](args...)
 
-  constructor: (@name) ->
-    @_adapter = accord.load @name
+  constructor: (@name, @customPath) ->
+    @_adapter = accord.load @name, customPath
     @extensions = @_adapter.extensions
     @output = @_adapter.output
     @compiler = @_adapter.compiler
@@ -38,6 +37,6 @@ class AccordProxy
     @compile = @_adapter.compile.bind(@_adapter)
     @compileFile = @_adapter.compileFile.bind(@_adapter)
 
-module.exports.load = (name) -> new AccordProxy(name)
+module.exports.load = (args...) -> new AccordProxy(args...)
 module.exports.supports = accord.supports
 module.exports.all = accord.all

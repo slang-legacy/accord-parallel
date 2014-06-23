@@ -1,14 +1,13 @@
 accord = require 'accord'
-JASON = require 'JASON'
 
 # keep a cache of adapters
 adapters = {}
 
-module.exports = (adapter, method, args, cb) ->
+module.exports = (adapter, customPath, method, args, cb) ->
   unless adapter of adapters
-    adapters[adapter] = accord.load(adapter)
+    adapters[adapter] = accord.load(adapter, customPath)
   adapters[adapter][method](args...).then(
     (res) ->
-      cb null, JASON.stringify(res)
+      cb null, JSON.stringify(res)
     (err) -> cb err
   )
