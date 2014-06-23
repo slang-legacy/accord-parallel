@@ -40,3 +40,5 @@ class AccordProxy
 module.exports.load = (args...) -> new AccordProxy(args...)
 module.exports.supports = accord.supports
 module.exports.all = accord.all
+module.exports.endWorkerFarm = ->
+  workerFarm.end(workers)
