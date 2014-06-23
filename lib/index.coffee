@@ -14,9 +14,8 @@ class AccordProxy
 
   _delegate: (method, args...) ->
     canBeDelegated = true
-    if not _.isEqual(args, (args2 = JSON.parse(JSON.stringify(args))))
+    if not _.isEqual(args, JSON.parse(JSON.stringify(args)))
       canBeDelegated = false
-      console.log 'cant be delegated', args, args2
     if canBeDelegated
       nodefn.apply(workers, [@name, method, args]).then((res) ->
         JASON.parse(res)
@@ -32,10 +31,12 @@ class AccordProxy
     @clientHelpers = @_adapter.clientHelpers
     @render = @_delegate.bind(this, 'render')
     @renderFile = @_delegate.bind(this, 'renderFile')
-    @compile = @_delegate.bind(this, 'compile')
-    @compileFile = @_delegate.bind(this, 'compileFile')
     @compileClient = @_delegate.bind(this, 'compileClient')
     @compileFileClient = @_delegate.bind(this, 'compileFileClient')
+
+    # these can't be delegated yet because they return functions
+    @compile = @_adapter.compile.bind(@_adapter)
+    @compileFile = @_adapter.compileFile.bind(@_adapter)
 
 module.exports.load = (name) -> new AccordProxy(name)
 module.exports.supports = accord.supports
