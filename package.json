@@ -42,6 +42,7 @@
   "license": "GPLv3",
   "main": "lib",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "build-worker": "coffee -c lib/worker.coffee"
   }
 }
